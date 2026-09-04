@@ -180,8 +180,8 @@ export const Hero: React.FC = () => {
         </div>
       </div>
 
-      {/* Lower Hero Content: Left metadata + Right monumental headline */}
-      <div className="site-container" style={{ position: 'relative', zIndex: 10, marginTop: '1.5rem' }}>
+      {/* Lower Hero Content: Left metadata + Right monumental headline (Spaced to prevent sticking) */}
+      <div className="site-container" style={{ position: 'relative', zIndex: 10, marginTop: 'clamp(2.75rem, 5vh, 4.25rem)' }}>
         <div
           style={{
             display: 'grid',

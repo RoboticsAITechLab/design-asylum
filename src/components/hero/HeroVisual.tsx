@@ -43,7 +43,7 @@ export const HeroVisual: React.FC = () => {
         padding: '0 20px',
       }}
     >
-      {/* Left Card (PREVIOUS CLIENT SLIDE) - Clean, Flat, Balanced Elevation */}
+      {/* Left Card (PREVIOUS CLIENT SLIDE) - Clean, Flat, Balanced Elevation with Subtle Blur */}
       <div
         onClick={prevSlide}
         role="button"
@@ -51,14 +51,14 @@ export const HeroVisual: React.FC = () => {
         aria-label={`Previous project: ${prevSlideData.clientName}`}
         style={{
           position: 'absolute',
-          left: 'clamp(8px, 4vw, 48px)',
+          left: 'clamp(24px, 7vw, 90px)',
           width: 'clamp(180px, 21vw, 270px)',
           height: 'clamp(270px, 34vw, 410px)',
           borderRadius: '20px',
           border: `1.5px solid ${prevSlideData.themeColor || currentSlide.themeColor}`,
           boxShadow: `0 16px 45px rgba(0, 0, 0, 0.4), 0 0 35px ${prevSlideData.glowColor || currentSlide.glowColor}`,
-          transform: `translate3d(${mousePos.x * 0.15}px, ${mousePos.y * 0.15 + 16}px, 0) scale(0.94)`,
-          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
+          transform: `translate3d(${mousePos.x * 0.15}px, ${mousePos.y * 0.15 + 16}px, 0) scale(0.92)`,
+          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease, filter 0.3s ease',
           backdropFilter: 'blur(10px)',
           overflow: 'hidden',
           zIndex: 1,
@@ -88,7 +88,8 @@ export const HeroVisual: React.FC = () => {
                   height: '100%',
                   objectFit: 'cover',
                   objectPosition: 'center top',
-                  filter: 'contrast(1.1) brightness(0.85) saturate(1.15)',
+                  filter: 'contrast(1.05) brightness(0.8) saturate(1.1) blur(4px)',
+                  transform: 'scale(1.08)',
                 }}
               />
             </div>
@@ -306,7 +307,7 @@ export const HeroVisual: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Card (NEXT CLIENT SLIDE) - Clean, Flat, Balanced Elevation */}
+      {/* Right Card (NEXT CLIENT SLIDE) - Clean, Flat, Balanced Elevation with Subtle Blur */}
       <div
         onClick={nextSlide}
         role="button"
@@ -314,14 +315,14 @@ export const HeroVisual: React.FC = () => {
         aria-label={`Next project: ${nextSlideData.clientName}`}
         style={{
           position: 'absolute',
-          right: 'clamp(8px, 4vw, 48px)',
+          right: 'clamp(24px, 7vw, 90px)',
           width: 'clamp(180px, 21vw, 270px)',
           height: 'clamp(270px, 34vw, 410px)',
           borderRadius: '20px',
           border: `1.5px solid ${nextSlideData.themeColor || currentSlide.themeColor}`,
           boxShadow: `0 16px 45px rgba(0, 0, 0, 0.4), 0 0 35px ${nextSlideData.glowColor || currentSlide.glowColor}`,
-          transform: `translate3d(${mousePos.x * 0.15}px, ${mousePos.y * 0.15 + 16}px, 0) scale(0.94)`,
-          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
+          transform: `translate3d(${mousePos.x * 0.15}px, ${mousePos.y * 0.15 + 16}px, 0) scale(0.92)`,
+          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease, filter 0.3s ease',
           backdropFilter: 'blur(10px)',
           overflow: 'hidden',
           zIndex: 1,
@@ -351,7 +352,8 @@ export const HeroVisual: React.FC = () => {
                   height: '100%',
                   objectFit: 'cover',
                   objectPosition: 'center top',
-                  filter: 'contrast(1.1) brightness(0.85) saturate(1.15)',
+                  filter: 'contrast(1.05) brightness(0.8) saturate(1.1) blur(4px)',
+                  transform: 'scale(1.08)',
                 }}
               />
             </div>

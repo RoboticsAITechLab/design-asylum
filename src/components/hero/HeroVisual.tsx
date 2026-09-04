@@ -200,7 +200,7 @@ export const HeroVisual: React.FC = () => {
         </div>
       </div>
 
-      {/* Centerpiece Visual: Pre-stacked slides for butter-smooth auto crossfading */}
+      {/* Centerpiece Visual: Hero Active Artwork with Cinematic Entrance Animation */}
       <div
         style={{
           position: 'relative',
@@ -214,16 +214,18 @@ export const HeroVisual: React.FC = () => {
           transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
-        {/* Dynamic Halo Light behind figure */}
+        {/* Dynamic Halo Light behind figure with ambient pulsing */}
         <div
+          key={`halo-${currentSlideIndex}`}
           style={{
             position: 'absolute',
-            width: '105%',
-            height: '95%',
+            width: '110%',
+            height: '100%',
             borderRadius: '50%',
             background: `radial-gradient(ellipse, ${currentSlide.glowColor} 0%, transparent 75%)`,
             filter: 'blur(45px)',
             zIndex: 0,
+            animation: 'heroPulseHalo 4s ease-in-out infinite',
             transition: 'background 0.8s ease',
           }}
         />
@@ -236,8 +238,10 @@ export const HeroVisual: React.FC = () => {
             height: '100%',
             overflow: 'hidden',
             borderRadius: '24px',
-            maskImage: 'linear-gradient(to bottom, black 72%, transparent 98%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 72%, transparent 98%)',
+            maskImage: 'linear-gradient(to bottom, black 75%, transparent 98%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 75%, transparent 98%)',
+            boxShadow: `0 25px 60px -15px rgba(0, 0, 0, 0.65), 0 0 30px ${currentSlide.glowColor}`,
+            transition: 'box-shadow 0.8s ease',
             zIndex: 1,
           }}
         >
@@ -251,9 +255,9 @@ export const HeroVisual: React.FC = () => {
                   position: 'absolute',
                   inset: 0,
                   opacity: isActive ? 1 : 0,
-                  transform: isActive ? 'scale(1)' : 'scale(1.04)',
-                  transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
                   pointerEvents: isActive ? 'auto' : 'none',
+                  animation: isActive ? 'heroCenterEnter 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards' : 'none',
+                  transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
                 <img
@@ -269,6 +273,20 @@ export const HeroVisual: React.FC = () => {
                       : 'contrast(1.05) brightness(1.02) saturate(1.05)',
                   }}
                 />
+
+                {/* Cinematic Specular Glint Sweep on slide enter */}
+                {isActive && (
+                  <div
+                    key={`glint-${currentSlideIndex}`}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.4) 50%, transparent 65%)',
+                      animation: 'heroGlintSweep 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                      pointerEvents: 'none',
+                    }}
+                  />
+                )}
 
                 {/* Atmospheric Lighting Overlay */}
                 <div

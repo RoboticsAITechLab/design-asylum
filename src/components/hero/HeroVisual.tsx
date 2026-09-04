@@ -36,7 +36,6 @@ export const HeroVisual: React.FC = () => {
         maxWidth: '1240px',
         height: 'clamp(380px, 52vh, 580px)',
         margin: '0 auto',
-        perspective: '1200px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -44,7 +43,7 @@ export const HeroVisual: React.FC = () => {
         padding: '0 20px',
       }}
     >
-      {/* 3D Left Floating Perspective Card (PREVIOUS CLIENT SLIDE) */}
+      {/* Left Card (PREVIOUS CLIENT SLIDE) - Clean, Flat, Balanced Elevation */}
       <div
         onClick={prevSlide}
         role="button"
@@ -52,16 +51,15 @@ export const HeroVisual: React.FC = () => {
         aria-label={`Previous project: ${prevSlideData.clientName}`}
         style={{
           position: 'absolute',
-          left: 'clamp(0px, 4vw, 40px)',
-          top: '18%',
-          width: 'clamp(180px, 20vw, 260px)',
-          height: 'clamp(260px, 32vw, 390px)',
-          borderRadius: '16px',
+          left: 'clamp(8px, 4vw, 48px)',
+          width: 'clamp(180px, 21vw, 270px)',
+          height: 'clamp(270px, 34vw, 410px)',
+          borderRadius: '20px',
           border: `1.5px solid ${prevSlideData.themeColor || currentSlide.themeColor}`,
-          boxShadow: `0 10px 40px ${prevSlideData.glowColor || currentSlide.glowColor}, inset 0 0 20px ${prevSlideData.glowColor || currentSlide.glowColor}`,
-          transform: `perspective(1000px) rotateY(${20 + mousePos.x * 0.4}deg) rotateX(${-5 - mousePos.y * 0.3}deg) translateZ(10px)`,
-          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
-          backdropFilter: 'blur(8px)',
+          boxShadow: `0 16px 45px rgba(0, 0, 0, 0.4), 0 0 35px ${prevSlideData.glowColor || currentSlide.glowColor}`,
+          transform: `translate3d(${mousePos.x * 0.15}px, ${mousePos.y * 0.15 + 16}px, 0) scale(0.94)`,
+          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
+          backdropFilter: 'blur(10px)',
           overflow: 'hidden',
           zIndex: 1,
           cursor: 'pointer',
@@ -290,7 +288,7 @@ export const HeroVisual: React.FC = () => {
         </div>
       </div>
 
-      {/* 3D Right Floating Perspective Card (NEXT CLIENT SLIDE) */}
+      {/* Right Card (NEXT CLIENT SLIDE) - Clean, Flat, Balanced Elevation */}
       <div
         onClick={nextSlide}
         role="button"
@@ -298,16 +296,15 @@ export const HeroVisual: React.FC = () => {
         aria-label={`Next project: ${nextSlideData.clientName}`}
         style={{
           position: 'absolute',
-          right: 'clamp(0px, 4vw, 40px)',
-          top: '18%',
-          width: 'clamp(180px, 20vw, 260px)',
-          height: 'clamp(260px, 32vw, 390px)',
-          borderRadius: '16px',
+          right: 'clamp(8px, 4vw, 48px)',
+          width: 'clamp(180px, 21vw, 270px)',
+          height: 'clamp(270px, 34vw, 410px)',
+          borderRadius: '20px',
           border: `1.5px solid ${nextSlideData.themeColor || currentSlide.themeColor}`,
-          boxShadow: `0 10px 40px ${nextSlideData.glowColor || currentSlide.glowColor}, inset 0 0 20px ${nextSlideData.glowColor || currentSlide.glowColor}`,
-          transform: `perspective(1000px) rotateY(${-20 + mousePos.x * 0.4}deg) rotateX(${-5 - mousePos.y * 0.3}deg) translateZ(10px)`,
-          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
-          backdropFilter: 'blur(8px)',
+          boxShadow: `0 16px 45px rgba(0, 0, 0, 0.4), 0 0 35px ${nextSlideData.glowColor || currentSlide.glowColor}`,
+          transform: `translate3d(${mousePos.x * 0.15}px, ${mousePos.y * 0.15 + 16}px, 0) scale(0.94)`,
+          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
+          backdropFilter: 'blur(10px)',
           overflow: 'hidden',
           zIndex: 1,
           cursor: 'pointer',

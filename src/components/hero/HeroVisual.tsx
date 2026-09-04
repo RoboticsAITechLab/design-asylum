@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useHero } from '@/context/HeroContext';
 
 export const HeroVisual: React.FC = () => {
-  const { currentSlide, currentSlideIndex, allSlides } = useHero();
+  const { currentSlide, currentSlideIndex, allSlides, prevSlide, nextSlide } = useHero();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -19,6 +19,13 @@ export const HeroVisual: React.FC = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  const totalSlides = allSlides.length;
+  const prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+  const nextIndex = (currentSlideIndex + 1) % totalSlides;
+
+  const prevSlideData = allSlides[prevIndex];
+  const nextSlideData = allSlides[nextIndex];
+
   const isDark = currentSlide.isDarkTheme;
 
   return (
@@ -26,7 +33,7 @@ export const HeroVisual: React.FC = () => {
       style={{
         position: 'relative',
         width: '100%',
-        maxWidth: '1020px',
+        maxWidth: '1060px',
         height: 'clamp(380px, 52vh, 580px)',
         margin: '0 auto',
         perspective: '1200px',
@@ -36,36 +43,86 @@ export const HeroVisual: React.FC = () => {
         zIndex: 2,
       }}
     >
-      {/* 3D Left Floating Perspective Card */}
+      {/* 3D Left Floating Perspective Card (PREVIOUS CLIENT SLIDE) */}
       <div
+        onClick={prevSlide}
+        role="button"
+        tabIndex={0}
+        aria-label={`Previous project: ${prevSlideData.clientName}`}
         style={{
           position: 'absolute',
-          left: 'clamp(-3%, 3%, 6%)',
-          top: '20%',
-          width: 'clamp(180px, 22vw, 270px)',
-          height: 'clamp(260px, 34vw, 400px)',
+          left: 'clamp(-4%, 2%, 5%)',
+          top: '18%',
+          width: 'clamp(190px, 23vw, 280px)',
+          height: 'clamp(270px, 35vw, 410px)',
           borderRadius: '16px',
-          border: `1.5px solid ${currentSlide.themeColor}`,
-          background: isDark
-            ? `linear-gradient(135deg, ${currentSlide.glowColor} 0%, rgba(7, 7, 9, 0.4) 100%)`
-            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(200, 176, 151, 0.35) 100%)',
-          boxShadow: `0 0 35px ${currentSlide.glowColor}, inset 0 0 20px ${currentSlide.glowColor}`,
+          border: `1.5px solid ${prevSlideData.themeColor || currentSlide.themeColor}`,
+          boxShadow: `0 10px 40px ${prevSlideData.glowColor || currentSlide.glowColor}, inset 0 0 20px ${prevSlideData.glowColor || currentSlide.glowColor}`,
           transform: `perspective(1000px) rotateY(${22 + mousePos.x * 0.4}deg) rotateX(${-6 - mousePos.y * 0.3}deg) translateZ(30px)`,
-          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease, background 0.6s ease',
+          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
           backdropFilter: 'blur(8px)',
           overflow: 'hidden',
           zIndex: 1,
+          cursor: 'pointer',
         }}
       >
+        {/* Pre-stacked visual images for left card to eliminate flicker */}
+        {allSlides.map((slide, idx) => {
+          const isCurrentPrev = idx === prevIndex;
+          return (
+            <div
+              key={`prev-${slide.id}`}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                opacity: isCurrentPrev ? 1 : 0,
+                transform: isCurrentPrev ? 'scale(1)' : 'scale(1.05)',
+                transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
+                pointerEvents: 'none',
+              }}
+            >
+              <img
+                src={slide.image}
+                alt={slide.clientName}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center top',
+                  filter: 'contrast(1.1) brightness(0.85) saturate(1.15)',
+                }}
+              />
+            </div>
+          );
+        })}
+
+        {/* Brand Overlay Tint */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `radial-gradient(circle at 20% 20%, ${isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)'} 1px, transparent 1px)`,
-            backgroundSize: '24px 24px',
-            opacity: 0.6,
+            background: prevSlideData.isDarkTheme
+              ? `linear-gradient(135deg, ${prevSlideData.glowColor} 0%, rgba(7, 7, 9, 0.7) 100%)`
+              : 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(200, 176, 151, 0.45) 100%)',
+            mixBlendMode: prevSlideData.isDarkTheme ? 'color-burn' : 'multiply',
+            pointerEvents: 'none',
+            transition: 'background 0.6s ease',
           }}
         />
+
+        {/* Grid Texture */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `radial-gradient(circle at 20% 20%, ${prevSlideData.isDarkTheme ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.12)'} 1px, transparent 1px)`,
+            backgroundSize: '20px 20px',
+            opacity: 0.7,
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* Top Accent Line */}
         <div
           style={{
             position: 'absolute',
@@ -73,23 +130,74 @@ export const HeroVisual: React.FC = () => {
             left: 0,
             right: 0,
             height: '2px',
-            background: `linear-gradient(90deg, transparent, ${currentSlide.accentColor}, transparent)`,
+            background: `linear-gradient(90deg, transparent, ${prevSlideData.accentColor}, transparent)`,
+            zIndex: 2,
           }}
         />
+
+        {/* Top Badge: Previous Indicator */}
         <div
           style={{
             position: 'absolute',
-            bottom: '16px',
-            left: '16px',
+            top: '14px',
+            left: '14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '4px 10px',
+            borderRadius: '999px',
+            background: 'rgba(0, 0, 0, 0.55)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
             fontFamily: 'var(--font-geist-mono)',
-            fontSize: '0.6875rem',
-            color: isDark ? currentSlide.accentColor : '#554433',
-            letterSpacing: '0.1em',
-            fontWeight: 600,
-            transition: 'color 0.4s ease',
+            fontSize: '0.625rem',
+            color: '#fff',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            zIndex: 2,
           }}
         >
-          {currentSlide.clientName} // 01L
+          <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>←</span> PREV
+        </div>
+
+        {/* Bottom Label: Client Name */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '28px 16px 14px',
+            background: 'linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+            zIndex: 2,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: 'var(--font-geist-sans)',
+              fontSize: '0.9375rem',
+              fontWeight: 700,
+              color: '#ffffff',
+              letterSpacing: '-0.01em',
+              textShadow: '0 2px 10px rgba(0,0,0,0.8)',
+            }}
+          >
+            {prevSlideData.clientName}
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-geist-mono)',
+              fontSize: '0.625rem',
+              color: prevSlideData.accentColor,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {prevSlideData.category}
+          </span>
         </div>
       </div>
 
@@ -102,7 +210,7 @@ export const HeroVisual: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 2,
+          zIndex: 3,
           transform: `translate3d(${mousePos.x * 0.25}px, ${mousePos.y * 0.25}px, 0)`,
           transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
@@ -181,36 +289,86 @@ export const HeroVisual: React.FC = () => {
         </div>
       </div>
 
-      {/* 3D Right Floating Perspective Card */}
+      {/* 3D Right Floating Perspective Card (NEXT CLIENT SLIDE) */}
       <div
+        onClick={nextSlide}
+        role="button"
+        tabIndex={0}
+        aria-label={`Next project: ${nextSlideData.clientName}`}
         style={{
           position: 'absolute',
-          right: 'clamp(-3%, 3%, 6%)',
-          top: '20%',
-          width: 'clamp(180px, 22vw, 270px)',
-          height: 'clamp(260px, 34vw, 400px)',
+          right: 'clamp(-4%, 2%, 5%)',
+          top: '18%',
+          width: 'clamp(190px, 23vw, 280px)',
+          height: 'clamp(270px, 35vw, 410px)',
           borderRadius: '16px',
-          border: `1.5px solid ${currentSlide.themeColor}`,
-          background: isDark
-            ? `linear-gradient(135deg, rgba(7, 7, 9, 0.4) 0%, ${currentSlide.glowColor} 100%)`
-            : 'linear-gradient(135deg, rgba(200, 176, 151, 0.35) 0%, rgba(255, 255, 255, 0.75) 100%)',
-          boxShadow: `0 0 35px ${currentSlide.glowColor}, inset 0 0 20px ${currentSlide.glowColor}`,
+          border: `1.5px solid ${nextSlideData.themeColor || currentSlide.themeColor}`,
+          boxShadow: `0 10px 40px ${nextSlideData.glowColor || currentSlide.glowColor}, inset 0 0 20px ${nextSlideData.glowColor || currentSlide.glowColor}`,
           transform: `perspective(1000px) rotateY(${-22 + mousePos.x * 0.4}deg) rotateX(${-6 - mousePos.y * 0.3}deg) translateZ(30px)`,
-          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease, background 0.6s ease',
+          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
           backdropFilter: 'blur(8px)',
           overflow: 'hidden',
           zIndex: 1,
+          cursor: 'pointer',
         }}
       >
+        {/* Pre-stacked visual images for right card to eliminate flicker */}
+        {allSlides.map((slide, idx) => {
+          const isCurrentNext = idx === nextIndex;
+          return (
+            <div
+              key={`next-${slide.id}`}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                opacity: isCurrentNext ? 1 : 0,
+                transform: isCurrentNext ? 'scale(1)' : 'scale(1.05)',
+                transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
+                pointerEvents: 'none',
+              }}
+            >
+              <img
+                src={slide.image}
+                alt={slide.clientName}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center top',
+                  filter: 'contrast(1.1) brightness(0.85) saturate(1.15)',
+                }}
+              />
+            </div>
+          );
+        })}
+
+        {/* Brand Overlay Tint */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `radial-gradient(circle at 80% 80%, ${isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)'} 1px, transparent 1px)`,
-            backgroundSize: '24px 24px',
-            opacity: 0.6,
+            background: nextSlideData.isDarkTheme
+              ? `linear-gradient(135deg, rgba(7, 7, 9, 0.7) 0%, ${nextSlideData.glowColor} 100%)`
+              : 'linear-gradient(135deg, rgba(200, 176, 151, 0.45) 0%, rgba(255, 255, 255, 0.6) 100%)',
+            mixBlendMode: nextSlideData.isDarkTheme ? 'color-burn' : 'multiply',
+            pointerEvents: 'none',
+            transition: 'background 0.6s ease',
           }}
         />
+
+        {/* Grid Texture */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `radial-gradient(circle at 80% 80%, ${nextSlideData.isDarkTheme ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.12)'} 1px, transparent 1px)`,
+            backgroundSize: '20px 20px',
+            opacity: 0.7,
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* Top Accent Line */}
         <div
           style={{
             position: 'absolute',
@@ -218,23 +376,75 @@ export const HeroVisual: React.FC = () => {
             left: 0,
             right: 0,
             height: '2px',
-            background: `linear-gradient(90deg, transparent, ${currentSlide.accentColor}, transparent)`,
+            background: `linear-gradient(90deg, transparent, ${nextSlideData.accentColor}, transparent)`,
+            zIndex: 2,
           }}
         />
+
+        {/* Top Badge: Next Indicator */}
         <div
           style={{
             position: 'absolute',
-            bottom: '16px',
-            right: '16px',
+            top: '14px',
+            right: '14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '4px 10px',
+            borderRadius: '999px',
+            background: 'rgba(0, 0, 0, 0.55)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
             fontFamily: 'var(--font-geist-mono)',
-            fontSize: '0.6875rem',
-            color: isDark ? currentSlide.accentColor : '#554433',
-            letterSpacing: '0.1em',
-            fontWeight: 600,
-            transition: 'color 0.4s ease',
+            fontSize: '0.625rem',
+            color: '#fff',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            zIndex: 2,
           }}
         >
-          {currentSlide.metric} // {currentSlide.metricLabel}
+          NEXT <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>→</span>
+        </div>
+
+        {/* Bottom Label: Client Name */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '28px 16px 14px',
+            background: 'linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            gap: '2px',
+            zIndex: 2,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: 'var(--font-geist-sans)',
+              fontSize: '0.9375rem',
+              fontWeight: 700,
+              color: '#ffffff',
+              letterSpacing: '-0.01em',
+              textShadow: '0 2px 10px rgba(0,0,0,0.8)',
+            }}
+          >
+            {nextSlideData.clientName}
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-geist-mono)',
+              fontSize: '0.625rem',
+              color: nextSlideData.accentColor,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {nextSlideData.category}
+          </span>
         </div>
       </div>
     </div>

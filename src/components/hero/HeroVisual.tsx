@@ -33,7 +33,7 @@ export const HeroVisual: React.FC = () => {
       style={{
         position: 'relative',
         width: '100%',
-        maxWidth: '1060px',
+        maxWidth: '1240px',
         height: 'clamp(380px, 52vh, 580px)',
         margin: '0 auto',
         perspective: '1200px',
@@ -41,6 +41,7 @@ export const HeroVisual: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 2,
+        padding: '0 20px',
       }}
     >
       {/* 3D Left Floating Perspective Card (PREVIOUS CLIENT SLIDE) */}
@@ -51,14 +52,14 @@ export const HeroVisual: React.FC = () => {
         aria-label={`Previous project: ${prevSlideData.clientName}`}
         style={{
           position: 'absolute',
-          left: 'clamp(-4%, 2%, 5%)',
+          left: 'clamp(0px, 4vw, 40px)',
           top: '18%',
-          width: 'clamp(190px, 23vw, 280px)',
-          height: 'clamp(270px, 35vw, 410px)',
+          width: 'clamp(180px, 20vw, 260px)',
+          height: 'clamp(260px, 32vw, 390px)',
           borderRadius: '16px',
           border: `1.5px solid ${prevSlideData.themeColor || currentSlide.themeColor}`,
           boxShadow: `0 10px 40px ${prevSlideData.glowColor || currentSlide.glowColor}, inset 0 0 20px ${prevSlideData.glowColor || currentSlide.glowColor}`,
-          transform: `perspective(1000px) rotateY(${22 + mousePos.x * 0.4}deg) rotateX(${-6 - mousePos.y * 0.3}deg) translateZ(30px)`,
+          transform: `perspective(1000px) rotateY(${20 + mousePos.x * 0.4}deg) rotateX(${-5 - mousePos.y * 0.3}deg) translateZ(10px)`,
           transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
           backdropFilter: 'blur(8px)',
           overflow: 'hidden',
@@ -297,14 +298,14 @@ export const HeroVisual: React.FC = () => {
         aria-label={`Next project: ${nextSlideData.clientName}`}
         style={{
           position: 'absolute',
-          right: 'clamp(-4%, 2%, 5%)',
+          right: 'clamp(0px, 4vw, 40px)',
           top: '18%',
-          width: 'clamp(190px, 23vw, 280px)',
-          height: 'clamp(270px, 35vw, 410px)',
+          width: 'clamp(180px, 20vw, 260px)',
+          height: 'clamp(260px, 32vw, 390px)',
           borderRadius: '16px',
           border: `1.5px solid ${nextSlideData.themeColor || currentSlide.themeColor}`,
           boxShadow: `0 10px 40px ${nextSlideData.glowColor || currentSlide.glowColor}, inset 0 0 20px ${nextSlideData.glowColor || currentSlide.glowColor}`,
-          transform: `perspective(1000px) rotateY(${-22 + mousePos.x * 0.4}deg) rotateX(${-6 - mousePos.y * 0.3}deg) translateZ(30px)`,
+          transform: `perspective(1000px) rotateY(${-20 + mousePos.x * 0.4}deg) rotateX(${-5 - mousePos.y * 0.3}deg) translateZ(10px)`,
           transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease',
           backdropFilter: 'blur(8px)',
           overflow: 'hidden',

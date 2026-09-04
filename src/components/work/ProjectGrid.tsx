@@ -24,10 +24,6 @@ export const ProjectGrid: React.FC<ProjectGridProps> = ({ projects, onSelectProj
       {projects.map((project, index) => (
         <div
           key={project.id}
-          style={{
-            // Stagger odd items slightly to reproduce the bespoke editorial cadence
-            transform: index % 2 === 1 ? 'translateY(clamp(0px, 2vw, 24px))' : 'none',
-          }}
           className="project-grid-item"
         >
           <ProjectCard project={project} onSelect={onSelectProject} index={index} />

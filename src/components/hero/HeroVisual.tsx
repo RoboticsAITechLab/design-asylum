@@ -40,17 +40,17 @@ export const HeroVisual: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          left: 'clamp(-4%, 3%, 8%)',
-          top: '18%',
-          width: 'clamp(160px, 20vw, 250px)',
-          height: 'clamp(240px, 32vw, 380px)',
+          left: 'clamp(-3%, 3%, 6%)',
+          top: '20%',
+          width: 'clamp(180px, 22vw, 270px)',
+          height: 'clamp(260px, 34vw, 400px)',
           borderRadius: '16px',
           border: `1.5px solid ${currentSlide.themeColor}`,
           background: isDark
             ? `linear-gradient(135deg, ${currentSlide.glowColor} 0%, rgba(7, 7, 9, 0.4) 100%)`
             : 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(200, 176, 151, 0.35) 100%)',
           boxShadow: `0 0 35px ${currentSlide.glowColor}, inset 0 0 20px ${currentSlide.glowColor}`,
-          transform: `perspective(1000px) rotateY(${24 + mousePos.x * 0.4}deg) rotateX(${-6 - mousePos.y * 0.3}deg) translateZ(30px)`,
+          transform: `perspective(1000px) rotateY(${22 + mousePos.x * 0.4}deg) rotateX(${-6 - mousePos.y * 0.3}deg) translateZ(30px)`,
           transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease, background 0.6s ease',
           backdropFilter: 'blur(8px)',
           overflow: 'hidden',
@@ -185,17 +185,17 @@ export const HeroVisual: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          right: 'clamp(-4%, 3%, 8%)',
-          top: '22%',
-          width: 'clamp(160px, 20vw, 250px)',
-          height: 'clamp(240px, 32vw, 380px)',
+          right: 'clamp(-3%, 3%, 6%)',
+          top: '20%',
+          width: 'clamp(180px, 22vw, 270px)',
+          height: 'clamp(260px, 34vw, 400px)',
           borderRadius: '16px',
           border: `1.5px solid ${currentSlide.themeColor}`,
           background: isDark
             ? `linear-gradient(135deg, rgba(7, 7, 9, 0.4) 0%, ${currentSlide.glowColor} 100%)`
             : 'linear-gradient(135deg, rgba(200, 176, 151, 0.35) 0%, rgba(255, 255, 255, 0.75) 100%)',
           boxShadow: `0 0 35px ${currentSlide.glowColor}, inset 0 0 20px ${currentSlide.glowColor}`,
-          transform: `perspective(1000px) rotateY(${-24 + mousePos.x * 0.4}deg) rotateX(${-6 - mousePos.y * 0.3}deg) translateZ(30px)`,
+          transform: `perspective(1000px) rotateY(${-22 + mousePos.x * 0.4}deg) rotateX(${-6 - mousePos.y * 0.3}deg) translateZ(30px)`,
           transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease, box-shadow 0.6s ease, background 0.6s ease',
           backdropFilter: 'blur(8px)',
           overflow: 'hidden',

@@ -881,8 +881,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect, ind
     }
   };
 
-  const isTall = index % 3 === 1;
-
   return (
     <article
       onClick={() => onSelect(project)}
@@ -897,12 +895,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSelect, ind
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Project Card Graphic Canvas */}
+      {/* Project Card Graphic Canvas - Equal uniform height across all columns */}
       <div
         style={{
           position: 'relative',
           width: '100%',
-          height: isTall ? 'clamp(360px, 42vw, 500px)' : 'clamp(300px, 34vw, 420px)',
+          height: 'clamp(340px, 38vw, 460px)',
           borderRadius: '16px',
           overflow: 'hidden',
           backgroundColor: project.bgColor,

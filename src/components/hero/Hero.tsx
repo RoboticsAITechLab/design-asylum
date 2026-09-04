@@ -10,24 +10,28 @@ interface HeroProject {
 
 const HERO_PROJECTS: HeroProject[] = [
   {
-    id: 'hob',
-    name: 'House of Believe',
-    image: '/exact_ref/bg_hob.jpg',
-  },
-  {
     id: 'abso',
     name: 'Abso Essentials',
-    image: '/exact_ref/bg_abso.jpg',
+    // Ultra-clean botanical skincare & wellness flatlay with organic natural ingredients
+    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=2560&q=90',
+  },
+  {
+    id: 'hob',
+    name: 'House of Believe',
+    // Editorial fashion & lifestyle aesthetic studio composition
+    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=2560&q=90',
   },
   {
     id: 'kor',
     name: 'Kōr Klub',
-    image: '/exact_ref/bg_kor.jpg',
+    // Dynamic sculptural movement & reformer wellness athlete
+    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=2560&q=90',
   },
   {
     id: 'snobs',
     name: 'Snobs',
-    image: '/exact_ref/bg_snobs.jpg',
+    // Modern artisanal culinary & premium hospitality visual
+    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=2560&q=90',
   },
 ];
 

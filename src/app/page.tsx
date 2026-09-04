@@ -5,6 +5,7 @@ import { HeroProvider } from '@/context/HeroContext';
 import { Header } from '@/components/layout/Header';
 import { Hero } from '@/components/hero/Hero';
 import { ClientMarquee } from '@/components/clients/ClientMarquee';
+import { ShippedProductsSection } from '@/components/sections/ShippedProductsSection';
 import { ProcessSection } from '@/components/process/ProcessSection';
 import { WorkSection } from '@/components/work/WorkSection';
 import { StatsSection } from '@/components/stats/StatsSection';
@@ -15,6 +16,7 @@ import { ContactSection } from '@/components/contact/ContactSection';
 import { FAQSection } from '@/components/faq/FAQSection';
 import { Footer } from '@/components/layout/Footer';
 import { CustomCursor } from '@/components/motion/CustomCursor';
+import { FloatingControls } from '@/components/layout/FloatingControls';
 
 export default function HomePage() {
   return (
@@ -33,6 +35,9 @@ export default function HomePage() {
 
           {/* SECTION 2: Infinite Monochrome Client Ticker (Synchronized with Hero) */}
           <ClientMarquee />
+
+          {/* SECTION 2.5: 150+ Products Shipped Section (Directly from reference site) */}
+          <ShippedProductsSection />
 
           {/* SECTION 3: Editorial Studio Philosophy & Capabilities Stack */}
           <ProcessSection />
@@ -61,6 +66,9 @@ export default function HomePage() {
 
         {/* Grand Editorial Footer with World Clocks & Studio Signature */}
         <Footer />
+
+        {/* Floating Screenity Controls & WhatsApp Button (Matching reference video) */}
+        <FloatingControls />
       </div>
     </HeroProvider>
   );

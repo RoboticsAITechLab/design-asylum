@@ -13,12 +13,11 @@ export interface StudioLocation {
 }
 
 export const NAV_LINKS: NavLink[] = [
+  { label: 'Home', href: '#' },
   { label: 'Work', href: '#work' },
+  { label: 'Our Story', href: '#story' },
   { label: 'Services', href: '#services' },
-  { label: 'Impact', href: '#impact' },
-  { label: 'Testimonials', href: '#testimonials' },
   { label: 'Insights', href: '#insights' },
-  { label: 'FAQ', href: '#faq' }
 ];
 
 export const STUDIO_LOCATIONS: StudioLocation[] = [

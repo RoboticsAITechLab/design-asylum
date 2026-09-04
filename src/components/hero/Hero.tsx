@@ -1,370 +1,187 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { HeroAtmosphere } from './HeroAtmosphere';
-import { HeroVisual } from './HeroVisual';
-import { useHero } from '@/context/HeroContext';
+
+interface HeroProject {
+  id: string;
+  name: string;
+  image: string;
+}
+
+const HERO_PROJECTS: HeroProject[] = [
+  {
+    id: 'hob',
+    name: 'House of Believe',
+    image: '/exact_ref/bg_hob.jpg',
+  },
+  {
+    id: 'abso',
+    name: 'Abso Essentials',
+    image: '/exact_ref/bg_abso.jpg',
+  },
+  {
+    id: 'kor',
+    name: 'Kōr Klub',
+    image: '/exact_ref/bg_kor.jpg',
+  },
+  {
+    id: 'snobs',
+    name: 'Snobs',
+    image: '/exact_ref/bg_snobs.jpg',
+  },
+];
 
 export const Hero: React.FC = () => {
-  const {
-    currentSlide,
-    currentSlideIndex,
-    allSlides,
-    setSlideIndex,
-    nextSlide,
-    prevSlide,
-    isAutoPlaying,
-    toggleAutoPlay,
-  } = useHero();
+  const [activeIndex, setActiveIndex] = useState(1); // Default to Abso Essentials as shown in video
 
-  const isDark = currentSlide.isDarkTheme;
-
-  // Real-time progress bar reflecting the 3.8s auto-play countdown
-  const [progress, setProgress] = useState(0);
-
+  // Auto-rotation matching video behavior
   useEffect(() => {
-    if (!isAutoPlaying) {
-      setProgress(0);
-      return;
-    }
-
-    setProgress(0);
-    const intervalTime = 38; // ms
-    const step = (intervalTime / 3800) * 100;
-
     const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) return 0;
-        return prev + step;
-      });
-    }, intervalTime);
+      setActiveIndex((prev) => (prev + 1) % HERO_PROJECTS.length);
+    }, 5500);
 
     return () => clearInterval(timer);
-  }, [currentSlideIndex, isAutoPlaying]);
+  }, []);
 
   return (
     <section
-      className={isDark ? 'section-dark' : 'section-light'}
       style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        paddingTop: 'clamp(5.5rem, 9vh, 7rem)',
-        paddingBottom: 'clamp(2rem, 4vh, 3.5rem)',
         position: 'relative',
-        transition: 'background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.8s ease',
+        width: '100%',
+        minHeight: '100vh',
+        height: '100vh',
+        overflow: 'hidden',
+        backgroundColor: '#FFFFFF',
       }}
+      id="hero-reference"
     >
-      <HeroAtmosphere />
-
-      {/* Dynamic Hero Visual Area */}
-      <div className="site-container" style={{ position: 'relative', zIndex: 10 }}>
-        <HeroVisual />
-
-        {/* Interactive Client Slide Switcher Bar + Auto-play Progress */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '0.75rem',
-            marginTop: '1.25rem',
-          }}
-        >
-          {/* Manual Switcher Chips */}
+      {/* 1. Full-Screen Visual Background with smooth crossfade */}
+      {HERO_PROJECTS.map((project, index) => {
+        const isActive = index === activeIndex;
+        return (
           <div
+            key={project.id}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.45rem',
-              flexWrap: 'wrap',
+              position: 'absolute',
+              inset: 0,
+              opacity: isActive ? 1 : 0,
+              transform: isActive ? 'scale(1)' : 'scale(1.03)',
+              transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1)',
+              pointerEvents: 'none',
+              zIndex: 1,
             }}
           >
-            {allSlides.map((slide, index) => {
-              const isActive = index === currentSlideIndex;
-              return (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => setSlideIndex(index)}
-                  style={{
-                    padding: '0.35rem 0.85rem',
-                    borderRadius: '9999px',
-                    fontSize: '0.6875rem',
-                    fontFamily: 'var(--font-geist-mono)',
-                    letterSpacing: '0.06em',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.25s var(--ease-cinematic)',
-                    backgroundColor: isActive
-                      ? (isDark ? '#FFFFFF' : '#0B0B0F')
-                      : (isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'),
-                    color: isActive
-                      ? (isDark ? '#0B0B0F' : '#FFFFFF')
-                      : (isDark ? 'rgba(255, 255, 255, 0.65)' : 'rgba(0, 0, 0, 0.6)'),
-                    border: `1px solid ${
-                      isActive
-                        ? (isDark ? '#FFFFFF' : '#0B0B0F')
-                        : (isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.1)')
-                    }`,
-                    transform: isActive ? 'scale(1.05)' : 'scale(1)',
-                  }}
-                >
-                  {slide.clientName}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Auto-Rotation Progress Bar with Play/Pause Pill */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-            }}
-          >
-            <div
+            <img
+              src={project.image}
+              alt={project.name}
               style={{
-                width: '160px',
-                height: '2px',
-                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.1)',
-                borderRadius: '2px',
-                overflow: 'hidden',
-                position: 'relative',
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
               }}
-            >
-              <div
-                style={{
-                  width: `${progress}%`,
-                  height: '100%',
-                  backgroundColor: currentSlide.themeColor || (isDark ? '#FFFFFF' : '#0B0B0F'),
-                  boxShadow: `0 0 8px ${currentSlide.themeColor || '#8B5CF6'}`,
-                  transition: 'width 0.038s linear',
-                }}
-              />
-            </div>
+            />
+          </div>
+        );
+      })}
 
+      {/* Subtle overlay to keep typography perfectly readable and high-contrast */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to right, rgba(255, 255, 255, 0.25) 0%, transparent 40%, rgba(255, 255, 255, 0.15) 100%)',
+          pointerEvents: 'none',
+          zIndex: 2,
+        }}
+      />
+
+      {/* 2. Lower-Left Project/Client List (Matching exact position, font & hierarchy) */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 'clamp(3.5rem, 8vh, 6.5rem)',
+          left: 'clamp(2rem, 5vw, 5.5rem)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.4rem',
+          zIndex: 10,
+          userSelect: 'none',
+        }}
+      >
+        {HERO_PROJECTS.map((project, index) => {
+          const isActive = index === activeIndex;
+          return (
             <button
+              key={project.id}
               type="button"
-              onClick={toggleAutoPlay}
-              aria-label="Toggle hero auto rotation"
+              onClick={() => setActiveIndex(index)}
               style={{
-                fontSize: '0.625rem',
-                fontFamily: 'var(--font-geist-mono)',
-                color: isDark ? 'rgba(255, 255, 255, 0.7)' : '#554433',
-                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)',
-                border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
-                padding: '0.2rem 0.6rem',
-                borderRadius: '9999px',
+                background: 'none',
+                border: 'none',
+                padding: '0.15rem 0',
+                textAlign: 'left',
+                fontFamily: 'var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                fontSize: 'clamp(0.85rem, 1.1vw, 1.05rem)',
+                fontWeight: isActive ? 700 : 400,
+                color: isActive ? '#0B0B0F' : '#6A6A75',
                 cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.35rem',
+                transition: 'all 0.25s ease',
               }}
             >
-              <span
-                style={{
-                  width: '5px',
-                  height: '5px',
-                  borderRadius: '50%',
-                  backgroundColor: isAutoPlaying ? '#10B981' : '#F59E0B',
-                  display: 'inline-block',
-                }}
-              />
-              {isAutoPlaying ? 'AUTO-CHANGING' : 'PAUSED'}
+              {project.name}
             </button>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
-      {/* Lower Hero Content: Left metadata + Right monumental headline (Spaced to prevent sticking) */}
-      <div className="site-container" style={{ position: 'relative', zIndex: 10, marginTop: 'clamp(2.75rem, 5vh, 4.25rem)' }}>
-        <div
+      {/* 3. Main Hero Headline & Subtext (Matching exact line-breaks, font size, weight and position) */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 'clamp(3.5rem, 8.5vh, 7rem)',
+          left: 'clamp(48%, 51vw, 53%)',
+          maxWidth: 'clamp(440px, 44vw, 840px)',
+          zIndex: 10,
+          textAlign: 'left',
+        }}
+        className="hero-headline-container"
+      >
+        <h1
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            gap: '2rem',
-            alignItems: 'flex-end',
+            fontFamily: 'var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            fontSize: 'clamp(2.4rem, 4.4vw, 4.75rem)',
+            fontWeight: 700,
+            lineHeight: 1.05,
+            letterSpacing: '-0.035em',
+            color: '#0B0B0F',
+            margin: '0 0 1.25rem 0',
           }}
-          className="hero-bottom-grid"
         >
-          {/* Left: Studio coordinate info & status badge */}
-          <div
-            style={{
-              gridColumn: 'span 4',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.85rem',
-            }}
-            className="hero-left-meta"
-          >
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                padding: '0.4rem 0.9rem',
-                borderRadius: '9999px',
-                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)',
-                border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.1)'}`,
-                width: 'fit-content',
-              }}
-            >
-              <span
-                style={{
-                  width: '7px',
-                  height: '7px',
-                  borderRadius: '50%',
-                  backgroundColor: currentSlide.accentColor || '#34D399',
-                  boxShadow: `0 0 8px ${currentSlide.accentColor || '#34D399'}`,
-                  display: 'inline-block',
-                }}
-              />
-              <span
-                className="mono-tag"
-                style={{
-                  color: isDark ? '#E2E8F0' : '#1A1A24',
-                  fontSize: '0.72rem',
-                  fontWeight: 600,
-                }}
-              >
-                {currentSlide.clientName} // {currentSlide.category}
-              </span>
-            </div>
+          Design Partner for scaling companies in India and the Middle East
+        </h1>
 
-            <p
-              style={{
-                fontSize: '0.875rem',
-                color: isDark ? 'rgba(255, 255, 255, 0.65)' : '#443A30',
-                maxWidth: '300px',
-                lineHeight: 1.5,
-                fontWeight: 500,
-              }}
-            >
-              Studio based in Bengaluru, Dubai & London. Delivering category-defining UI/UX, brand identity, and custom motion systems.
-            </p>
-
-            {/* Slider navigation arrows */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.2rem' }}>
-              <button
-                type="button"
-                onClick={prevSlide}
-                aria-label="Previous case study hero"
-                style={{
-                  width: '34px',
-                  height: '34px',
-                  borderRadius: '50%',
-                  border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)'}`,
-                  backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                  color: isDark ? '#FFFFFF' : '#0B0B0F',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                onClick={nextSlide}
-                aria-label="Next case study hero"
-                style={{
-                  width: '34px',
-                  height: '34px',
-                  borderRadius: '50%',
-                  border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)'}`,
-                  backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                  color: isDark ? '#FFFFFF' : '#0B0B0F',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                →
-              </button>
-              <span
-                className="mono-tag"
-                style={{
-                  marginLeft: '0.5rem',
-                  fontSize: '0.72rem',
-                  color: isDark ? 'rgba(255, 255, 255, 0.5)' : '#665544',
-                }}
-              >
-                {currentSlideIndex + 1} / {allSlides.length}
-              </span>
-            </div>
-          </div>
-
-          {/* Right: Massive Editorial Headline */}
-          <div
-            style={{
-              gridColumn: 'span 8',
-              textAlign: 'left',
-            }}
-            className="hero-right-title"
-          >
-            <h1
-              className="font-display"
-              style={{
-                fontSize: 'var(--font-hero)',
-                color: isDark ? '#FFFFFF' : '#0B0B0F',
-                fontWeight: 600,
-                lineHeight: 1.05,
-                letterSpacing: '-0.03em',
-                marginBottom: '1.75rem',
-                transition: 'color 0.6s ease',
-              }}
-            >
-              Design Partners for scaling companies in India and the Middle East
-            </h1>
-
-            {/* Quick Action Buttons */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-                flexWrap: 'wrap',
-              }}
-            >
-              <a
-                href="#work"
-                className={isDark ? 'btn-pill-light' : 'btn-pill-primary'}
-              >
-                <span>Explore Selected Work</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M6 2.5V9.5M6 9.5L9.5 6M6 9.5L2.5 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
-
-              <a
-                href="#contact"
-                className={isDark ? 'btn-pill-ghost-dark' : 'btn-pill-primary'}
-                style={!isDark ? { backgroundColor: 'transparent', color: '#0B0B0F', border: '1px solid rgba(0, 0, 0, 0.2)' } : {}}
-              >
-                <span>Book Discovery Call</span>
-              </a>
-            </div>
-          </div>
-        </div>
+        <p
+          style={{
+            fontFamily: 'var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            fontSize: 'clamp(0.95rem, 1.2vw, 1.2rem)',
+            fontWeight: 400,
+            lineHeight: 1.5,
+            color: '#2A2A35',
+            margin: 0,
+            maxWidth: '680px',
+          }}
+        >
+          Founding growth through strategic branding, UX/UI, development, and marketing for 10+ years.
+        </p>
       </div>
 
       <style jsx>{`
         @media (max-width: 900px) {
-          :global(.hero-bottom-grid) {
-            display: flex !important;
-            flex-direction: column-reverse !important;
-            gap: 1.75rem !important;
-          }
-          :global(.hero-left-meta), :global(.hero-right-title) {
-            width: 100% !important;
+          :global(.hero-headline-container) {
+            left: clamp(1.5rem, 4vw, 3rem) !important;
+            bottom: clamp(7rem, 14vh, 10rem) !important;
+            max-width: 90% !important;
           }
         }
       `}</style>

@@ -1,51 +1,80 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 
 interface HeroProject {
   id: string;
   name: string;
+  category: string;
   image: string;
+  href: string;
+  isDark?: boolean;
 }
 
 const HERO_PROJECTS: HeroProject[] = [
   {
-    id: 'abso',
-    name: 'Abso Essentials',
-    // Ultra-clean botanical skincare & wellness flatlay with organic natural ingredients
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=2560&q=90',
-  },
-  {
     id: 'hob',
     name: 'House of Believe',
-    // Editorial fashion & lifestyle aesthetic studio composition
-    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=2560&q=90',
+    category: 'D2C Fashion & Commerce',
+    image: '/hero/house-of-believe.webp',
+    href: '/work',
+  },
+  {
+    id: 'abso',
+    name: 'Abso Essentials',
+    category: 'Clean Botanical Skincare',
+    image: '/hero/abso-essentials.png',
+    href: '/work',
   },
   {
     id: 'kor',
     name: 'Kōr Klub',
-    // Dynamic sculptural movement & reformer wellness athlete
-    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=2560&q=90',
+    category: 'Pilates & Movement Culture',
+    image: '/hero/kor-klub.png',
+    href: '/work',
   },
   {
     id: 'snobs',
     name: 'Snobs',
-    // Modern artisanal culinary & premium hospitality visual
-    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=2560&q=90',
+    category: 'Music Culture & App',
+    image: '/hero/snobs.png',
+    href: '/work',
+    isDark: true,
   },
 ];
 
+const ROTATION_INTERVAL = 6000; // 6 seconds per slide
+
 export const Hero: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(1); // Default to Abso Essentials as shown in video
+  const [activeIndex, setActiveIndex] = useState(1); // Default to Abso Essentials as in reference
+  const [isPaused, setIsPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const progressStartTimeRef = useRef<number>(Date.now());
 
-  // Auto-rotation matching video behavior
+  // Dynamic progress bar & smooth auto-rotation
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % HERO_PROJECTS.length);
-    }, 5500);
+    if (isPaused) return;
 
-    return () => clearInterval(timer);
-  }, []);
+    progressStartTimeRef.current = Date.now();
+    setProgress(0);
+
+    const progressTimer = setInterval(() => {
+      const elapsed = Date.now() - progressStartTimeRef.current;
+      const pct = Math.min((elapsed / ROTATION_INTERVAL) * 100, 100);
+      setProgress(pct);
+
+      if (elapsed >= ROTATION_INTERVAL) {
+        setActiveIndex((prev) => (prev + 1) % HERO_PROJECTS.length);
+        progressStartTimeRef.current = Date.now();
+        setProgress(0);
+      }
+    }, 50);
+
+    return () => clearInterval(progressTimer);
+  }, [activeIndex, isPaused]);
+
+  const activeProject = HERO_PROJECTS[activeIndex];
 
   return (
     <section
@@ -58,8 +87,10 @@ export const Hero: React.FC = () => {
         backgroundColor: '#FFFFFF',
       }}
       id="hero-reference"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
     >
-      {/* 1. Full-Screen Visual Background with smooth crossfade */}
+      {/* 1. Full-Screen Visual Background with smooth cinematic Ken-Burns crossfade */}
       {HERO_PROJECTS.map((project, index) => {
         const isActive = index === activeIndex;
         return (
@@ -69,8 +100,8 @@ export const Hero: React.FC = () => {
               position: 'absolute',
               inset: 0,
               opacity: isActive ? 1 : 0,
-              transform: isActive ? 'scale(1)' : 'scale(1.03)',
-              transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1)',
+              transform: isActive ? 'scale(1)' : 'scale(1.04)',
+              transition: 'opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 2.2s cubic-bezier(0.16, 1, 0.3, 1)',
               pointerEvents: 'none',
               zIndex: 1,
             }}
@@ -83,24 +114,29 @@ export const Hero: React.FC = () => {
                 height: '100%',
                 objectFit: 'cover',
                 objectPosition: 'center',
+                filter: isActive ? 'none' : 'blur(4px)',
+                transition: 'filter 1.4s ease',
               }}
             />
           </div>
         );
       })}
 
-      {/* Subtle overlay to keep typography perfectly readable and high-contrast */}
+      {/* 2. Bespoke Editorial Lighting Gradient Mask for Ultra-Crisp Typography */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(to right, rgba(255, 255, 255, 0.25) 0%, transparent 40%, rgba(255, 255, 255, 0.15) 100%)',
+          background: activeProject.isDark
+            ? 'radial-gradient(ellipse at 75% 85%, rgba(0,0,0,0.55) 0%, transparent 60%), linear-gradient(to right, rgba(0,0,0,0.45) 0%, transparent 45%, rgba(0,0,0,0.4) 100%)'
+            : 'radial-gradient(ellipse at 75% 85%, rgba(255,255,255,0.75) 0%, transparent 55%), linear-gradient(to right, rgba(255,255,255,0.4) 0%, transparent 40%, rgba(255,255,255,0.2) 100%)',
           pointerEvents: 'none',
+          transition: 'background 1.2s ease',
           zIndex: 2,
         }}
       />
 
-      {/* 2. Lower-Left Project/Client List (Matching exact position, font & hierarchy) */}
+      {/* 3. Lower-Left Project/Client Interactive List */}
       <div
         style={{
           position: 'absolute',
@@ -108,7 +144,7 @@ export const Hero: React.FC = () => {
           left: 'clamp(2rem, 5vw, 5.5rem)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '0.4rem',
+          gap: '0.65rem',
           zIndex: 10,
           userSelect: 'none',
         }}
@@ -119,27 +155,82 @@ export const Hero: React.FC = () => {
             <button
               key={project.id}
               type="button"
-              onClick={() => setActiveIndex(index)}
+              onClick={() => {
+                setActiveIndex(index);
+                setProgress(0);
+                progressStartTimeRef.current = Date.now();
+              }}
               style={{
                 background: 'none',
                 border: 'none',
-                padding: '0.15rem 0',
+                padding: '0.2rem 0',
                 textAlign: 'left',
                 fontFamily: 'var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                fontSize: 'clamp(0.85rem, 1.1vw, 1.05rem)',
+                fontSize: 'clamp(0.9rem, 1.15vw, 1.1rem)',
                 fontWeight: isActive ? 700 : 400,
-                color: isActive ? '#0B0B0F' : '#6A6A75',
+                color: activeProject.isDark
+                  ? isActive ? '#FFFFFF' : 'rgba(255, 255, 255, 0.55)'
+                  : isActive ? '#0B0B0F' : '#6A6A75',
                 cursor: 'pointer',
-                transition: 'all 0.25s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                transform: isActive ? 'translateX(4px)' : 'none',
+                transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
             >
-              {project.name}
+              {/* Active Progress Line */}
+              <div
+                style={{
+                  width: isActive ? '24px' : '0px',
+                  height: '2px',
+                  backgroundColor: activeProject.isDark ? '#FFFFFF' : '#0B0B0F',
+                  opacity: isActive ? 1 : 0,
+                  transition: 'width 0.35s ease, opacity 0.35s ease',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  borderRadius: '2px',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    width: `${progress}%`,
+                    backgroundColor: activeProject.isDark ? '#7C3AED' : '#0B0B0F',
+                    transition: 'width 0.05s linear',
+                  }}
+                />
+              </div>
+
+              <span>{project.name}</span>
+
+              {isActive && (
+                <span
+                  style={{
+                    fontSize: '0.72rem',
+                    fontWeight: 500,
+                    letterSpacing: '0.04em',
+                    padding: '0.15rem 0.5rem',
+                    borderRadius: '100px',
+                    backgroundColor: activeProject.isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)',
+                    color: activeProject.isDark ? '#E2E8F0' : '#4B5563',
+                    backdropFilter: 'blur(8px)',
+                    marginLeft: '0.25rem',
+                    animation: 'fadeInTag 0.4s ease forwards',
+                  }}
+                >
+                  {project.category}
+                </span>
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* 3. Main Hero Headline & Subtext (Matching exact line-breaks, font size, weight and position) */}
+      {/* 4. Main Hero Headline & Subtext (Pixel-accurate layout & rich typography) */}
       <div
         style={{
           position: 'absolute',
@@ -156,10 +247,12 @@ export const Hero: React.FC = () => {
             fontFamily: 'var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
             fontSize: 'clamp(2.4rem, 4.4vw, 4.75rem)',
             fontWeight: 700,
-            lineHeight: 1.05,
-            letterSpacing: '-0.035em',
-            color: '#0B0B0F',
+            lineHeight: 1.04,
+            letterSpacing: '-0.04em',
+            color: activeProject.isDark ? '#FFFFFF' : '#0B0B0F',
             margin: '0 0 1.25rem 0',
+            transition: 'color 0.8s ease',
+            textShadow: activeProject.isDark ? '0 2px 20px rgba(0,0,0,0.6)' : 'none',
           }}
         >
           Design Partner for scaling companies in India and the Middle East
@@ -171,16 +264,57 @@ export const Hero: React.FC = () => {
             fontSize: 'clamp(0.95rem, 1.2vw, 1.2rem)',
             fontWeight: 400,
             lineHeight: 1.5,
-            color: '#2A2A35',
-            margin: 0,
+            color: activeProject.isDark ? 'rgba(255, 255, 255, 0.85)' : '#2A2A35',
+            margin: '0 0 1.5rem 0',
             maxWidth: '680px',
+            transition: 'color 0.8s ease',
           }}
         >
-          Founding growth through strategic branding, UX/UI, development, and marketing for 10+ years.
+          Fueling growth through strategic branding, UX/UI, development, and marketing for 10+ years.
         </p>
+
+        {/* Subtle Interactive Micro-CTA */}
+        <Link
+          href={activeProject.href}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            fontFamily: 'var(--font-geist-sans), sans-serif',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            color: activeProject.isDark ? '#FFFFFF' : '#0B0B0F',
+            textDecoration: 'none',
+            padding: '0.4rem 0.9rem',
+            borderRadius: '100px',
+            backgroundColor: activeProject.isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.05)',
+            border: activeProject.isDark ? '1px solid rgba(255,255,255,0.2)' : '1px solid rgba(0,0,0,0.08)',
+            backdropFilter: 'blur(10px)',
+            transition: 'all 0.25s ease',
+          }}
+          className="hero-case-link"
+        >
+          <span>View {activeProject.name} Case Study</span>
+          <span style={{ transition: 'transform 0.2s ease' }} className="hero-link-arrow">→</span>
+        </Link>
       </div>
 
       <style jsx>{`
+        @keyframes fadeInTag {
+          from {
+            opacity: 0;
+            transform: translateX(-6px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        :global(.hero-case-link:hover .hero-link-arrow) {
+          transform: translateX(4px);
+        }
+
         @media (max-width: 900px) {
           :global(.hero-headline-container) {
             left: clamp(1.5rem, 4vw, 3rem) !important;
